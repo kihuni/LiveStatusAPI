@@ -1,0 +1,54 @@
+env/
+env/bin/
+env/lib/
+.venv/
+.env
+
+
+# Bytecode files
+
+*.pyc
+
+__pycache__/
+
+
+
+# Compiled static files
+
+static/
+
+staticfiles/
+
+
+
+# Database files
+
+db.sqlite3
+
+db.sqlite3-journal
+
+
+
+# Migrations (except for the initial migration)
+
+migrations/
+
+
+
+# Build and distribution files
+
+build/
+
+dist/
+
+egg-info/
+
+
+
+# IDE and editor files
+
+.idea/
+
+.vscode/
+
+.pydevproject
