@@ -69,7 +69,7 @@ ROOT_URLCONF = "Collabspehere.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR/ "templates/users"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -126,7 +126,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
+FRONTEND_URL = "http://localhost:3000" 
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -149,3 +149,4 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

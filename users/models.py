@@ -99,7 +99,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'verification_url': verification_url
         }
         
-        message = render_to_string('email/verify_email.html', context)
+        message = render_to_string('users/verify_email.html', context)
         
         send_mail(
             'Verify your email address',
