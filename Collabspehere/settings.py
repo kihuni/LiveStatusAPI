@@ -84,6 +84,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "Collabspehere.wsgi.application"
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
