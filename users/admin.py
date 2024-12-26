@@ -16,11 +16,11 @@ class CustomUserAdmin(admin.ModelAdmin):
               'email_verified', 'verification_token', 'verification_token_created', 'date_joined', 'is_active', 'is_staff')
 
     list_display = ('id', 'username', 'email', 'email_verified',
-                    'full_name','is_staff', 'is_online', 'last_seen')
+                    'full_name', 'is_staff', 'is_online', 'last_seen')
     list_editable = ('username', 'email',
-                     'full_name', 'is_online','is_staff' ,'is_staff')
+                     'full_name', 'is_online', 'is_staff', 'is_staff')
     list_filter = ('username', 'email')
-    list_per_page = 10 # applies pagination
+    list_per_page = 10  # applies pagination
 
     # any words entered into the search box will be searched from this fields e.g username ='what was entered into search box'
     search_fields = ('username', 'full_name', 'device_tokens')
@@ -30,7 +30,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 class RoleAdmin(admin.ModelAdmin):
     fields = ('name', 'description', 'priority', 'custom_permissions', 'can_moderate',
               'can_manage_users', 'can_manage_roles', 'can_delete_messages', 'can_ban_users')
-    list_display = ('id','name', 'priority', 'custom_permissions', 'can_moderate',
+    list_display = ('id', 'name', 'priority', 'custom_permissions', 'can_moderate',
                     'can_manage_users', 'can_manage_roles', 'can_delete_messages', 'can_ban_users')
     list_editable = ('name', 'priority')
     list_filter = ('priority',)
