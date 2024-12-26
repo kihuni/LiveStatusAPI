@@ -42,9 +42,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # Status fields
     is_online = models.BooleanField(default=False)
     last_seen = models.DateTimeField(null=True, blank=True)
-    last_activity = models.DateTimeField(auto_now=True)  
+    last_activity = models.DateTimeField(auto_now=True)
     device_tokens = models.JSONField(default=dict, blank=True)
-    
+
     # Role field
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     
