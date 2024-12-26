@@ -24,3 +24,15 @@ class CustomUserAdmin(admin.ModelAdmin):
 
     # any words entered into the search box will be searched from this fields e.g username ='what was entered into search box'
     search_fields = ('username', 'full_name', 'device_tokens')
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    fields = ('name', 'description', 'priority', 'custom_permissions', 'can_moderate',
+              'can_manage_users', 'can_manage_roles', 'can_delete_messages', 'can_ban_users')
+    list_display = ('id','name', 'priority', 'custom_permissions', 'can_moderate',
+                    'can_manage_users', 'can_manage_roles', 'can_delete_messages', 'can_ban_users')
+    list_editable = ('name', 'priority')
+    list_filter = ('priority',)
+    list_per_page = 10
+    search_fields = ('name', 'priority')
