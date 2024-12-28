@@ -9,6 +9,9 @@ from .serializers import (
     UserLoginSerializer, UserProfileUpdateSerializer
 )
 from .models import Role, CustomUser
+from rest_framework.views import APIView
+from .middleware import RolePermission
+
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -158,3 +161,41 @@ class ResendVerificationView(generics.GenericAPIView):
         return Response({'message': 'Verification email sent'})
     
     
+class ManageRolesView(APIView):
+    permission_classes = [IsAuthenticated, RolePermission]
+    
+    def get(self, request):
+        # Check RBAC permission in middleware
+        roles = Role.objects.all()
+        return Response({"roles": [role.name for role in roles]})
+    
+    def post(self, request):
+        # Create or update roles based on user input
+        if not request.user.get_permissions().get('can_manage_roles'):
+            return Response({"error": "You do not have permission to manage roles."}, status=403)
+        
+        data = request.data
+        role, created = Role.objects.get_or_create(name=data.get('name'))
+        role.description = data.get('description', role.description)
+        role.save()
+        return Response({"message": "Role updated."})
+    
+    
+class AssignRoleView(APIView):
+    permission_classes = [IsAuthenticated, RolePermission]
+
+    def post(self, request):
+        if not request.user.get_permissions().get('can_manage_users'):
+            return Response({"error": "You do not have permission to assign roles."}, status=403)
+
+        user_id = request.data.get('user_id')
+        role_name = request.data.get('role')
+
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            role = Role.objects.get(name=role_name)
+            user.role = role
+            user.save()
+            return Response({"message": f"Role {role_name} assigned to user {user.username}."})
+        except (CustomUser.DoesNotExist, Role.DoesNotExist) as e:
+            return Response({"error": str(e)}, status=400)

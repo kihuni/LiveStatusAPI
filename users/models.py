@@ -81,7 +81,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'can_manage_roles': self.role.can_manage_roles,
             'can_delete_messages': self.role.can_delete_messages,
             'can_ban_users': self.role.can_ban_users,
-            **self.role.custom_permissions  # Include any custom permissions
+            **self.role.custom_permissions 
         }
 
     def generate_verification_token(self):
