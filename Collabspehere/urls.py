@@ -18,6 +18,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+#customization for the admin panel main interface
+admin.site.site_header = 'Collab Sphere: A smarter way of collaborating'
+admin.site.index_title = 'Collab Sphere Admin'
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('users.urls')),

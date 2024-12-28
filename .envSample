@@ -1,5 +1,5 @@
 # General Settings
-DEBUG=True
+DEBUG =  True
 SECRET_KEY= ""
 
 # Allowed Hosts (comma-separated)

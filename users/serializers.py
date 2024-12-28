@@ -33,15 +33,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         # Validate password match
-        if data['password'] != data['password2']:
+        password = data['password']
+        if password != data['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         
         # Validate password strength
         try:
-            validate_password(data['password'])
+            validate_password(password)
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({"password": list(e.messages)})
-            
         return data
 
     def create(self, validated_data):
@@ -60,7 +60,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         if 'bio' in validated_data:
             user.bio = validated_data['bio']
             user.save()
-            
         return user
 
 class UserLoginSerializer(serializers.Serializer):

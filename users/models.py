@@ -12,8 +12,8 @@ class Role(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    priority = models.IntegerField(default=0)  
-    custom_permissions = models.JSONField(default=dict) 
+    priority = models.IntegerField(default=0)
+    custom_permissions = models.JSONField(default=dict)
     
     # Define permissions for each role
     can_moderate = models.BooleanField(default=False)
@@ -25,7 +25,7 @@ class Role(models.Model):
     class Meta:
         verbose_name = _('role')
         verbose_name_plural = _('roles')
-        ordering = ['-priority'] 
+        ordering = ['-priority']
     
     def __str__(self):
         return self.name
@@ -42,9 +42,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # Status fields
     is_online = models.BooleanField(default=False)
     last_seen = models.DateTimeField(null=True, blank=True)
-    last_activity = models.DateTimeField(auto_now=True)  
-    device_tokens = models.JSONField(default=dict, blank=True) 
-    
+    last_activity = models.DateTimeField(auto_now=True)
+    device_tokens = models.JSONField(default=dict, blank=True)
+
     # Role field
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     
