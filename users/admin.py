@@ -37,8 +37,3 @@ class RoleAdmin(admin.ModelAdmin):
     list_per_page = 10
     search_fields = ('name', 'priority')
 
-
-
-admin.site.register(Role, RoleAdmin)
-admin.site.register(CustomUser, CustomUserAdmin)
-
