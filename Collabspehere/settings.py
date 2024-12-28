@@ -132,7 +132,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-FRONTEND_URL = "http://localhost:3000" 
+FRONTEND_URL = "http://localhost:3000"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
