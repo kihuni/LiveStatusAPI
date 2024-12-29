@@ -2,8 +2,6 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from .models import Role, CustomUser
 
-# Register your models here.
-
 # Get the user actual user model we are using for our project
 CustomUser = get_user_model()
 
