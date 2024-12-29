@@ -10,8 +10,6 @@ CollabSphere is a powerful Django-based real-time communication platform plugin 
 - Installation
 - Development
 - Contributing
-- Issues
-- License
 
 ### ✨ Features
 
