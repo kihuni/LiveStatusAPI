@@ -17,32 +17,32 @@ CollabSphere is a powerful Django-based real-time communication platform plugin 
 
 **_Authentication_**
 
-🔐 Custom user profiles
-👤 User status tracking
-🕒 Last seen functionality
-🔑 Social authentication support
+- 🔐 Custom user profiles
+- 👤 User status tracking
+- 🕒 Last seen functionality
+- 🔑 Social authentication support
 
 **_Chat Features_**
 
-💬 Public chat rooms
-📱 Direct messaging
-👥 Group chats
-📝 Message editing and deletion
-👀 Read receipts
-⌨️ Typing indicators
+- 💬 Public chat rooms
+- 📱 Direct messaging
+- 👥 Group chats
+- 📝 Message editing and deletion
+- 👀 Read receipts
+- ⌨️ Typing indicators
 
 **_File Sharing_**
 
-📁 Secure file uploads
-🖼️ Image previews
-📄 Document sharing
-🔍 File search capabilities
+- 📁 Secure file uploads
+- 🖼️ Image previews
+- 📄 Document sharing
+- 🔍 File search capabilities
 
 **_Notifications_**
 
-🔔 Real-time notifications
-📧 Email notifications
-⚙️ Custom notification preferences
+- 🔔 Real-time notifications
+- 📧 Email notifications
+- ⚙️ Custom notification preferences
 
 ### 📋 Requirements
 
