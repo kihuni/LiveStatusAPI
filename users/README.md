@@ -1,252 +1,139 @@
-# CollabSphere Authentication System Documentation
+# 📚 User Data Flow in the Application
 
+This document provides a detailed overview of how user data flows through the application—from registration to accessing resources. It highlights the key endpoints, models, serializers, and permissions that ensure a seamless and secure experience for users.
 
-## User Data Flow in the application
+---
 
-This document provides a comprehensive overview of how user data flows through the system—from registration to accessing protected resources. This flow ensures a seamless, secure, and structured experience for all users.
+## 🚀 **1. User Registration Process**
 
+### **Endpoint:** `POST /register/`
 
-### User Registration Process
+- **Purpose:** Creates a new user account.
+- **Flow:**
+  1. **Input Data:** Users provide:
+     - `email`, `username`, `full_name`, `password`, `password2` (optional: `bio`).
+  2. **Validation:** Ensures:
+     - Passwords match and meet strength criteria.
+  3. **User Creation:** 
+     - Generates a user with `email_verified = False` and assigns the default role (`user`).
+     - Sends an email with a verification link containing a `verification_token`.
+  4. **Response:** Returns user details and access tokens.
 
-**_Endpoint: POST /register/_**
+---
 
-- Purpose: Allows a new user to create an account.
+## ✅ **2. Email Verification Process**
 
-Steps:
+### **Endpoint:** `GET /verify-email/<token>/`
 
-**_Data Input: The user submits the following fields:_** 
+- **Purpose:** Activates a user’s email address.
+- **Steps:**
+  - Validates the `verification_token`.
+  - Sets `email_verified = True` on success.
+- **Response:** Confirms email verification or provides error messages for invalid tokens.
 
-- email
+---
 
-- username
+## 🔑 **3. User Login Process**
 
-- full_name
+### **Endpoint:** `POST /login/`
 
-- password
+- **Purpose:** Authenticates users and issues access tokens.
+- **Flow:**
+  1. **Input Data:** Users submit `email`, `password` (optional: `device_token`).
+  2. **Validation:** Verifies credentials and ensures the email is verified.
+  3. **Session Management:** Updates `is_online` and `last_seen`.
+  4. **Response:** Returns access and refresh tokens.
 
-- password2
+---
 
-- (Optional) bio
+## 🔒 **4. Accessing Protected Resources**
 
-**_Validation:_**
+### **Mechanism: Token-Based Authentication**
+- **Purpose:** Secures endpoints using JWT (JSON Web Tokens).
+- **Flow:**
+  1. Tokens are validated via Django REST Framework’s `SimpleJWT`.
+  2. Role-based permissions are enforced using the `RolePermission` class.
 
-- Password confirmation (password == password2).
+### **Example Protected Endpoints:**
+- **User Profile:** `GET /profile/`
+- **Resource Management:** Guarded by permissions (e.g., managing users, deleting messages).
 
-- Password strength is validated using Django’s built-in password validators.
+---
 
-**_User Creation:_**
+## 🛡️ **5. Role and Permission Management**
 
-- A new user is created with the provided details.
+### **Roles:**
+- **Default Role:** New users are assigned `user`.
+- **Custom Roles:** Admins can assign specific roles with defined permissions.
 
-- The email_verified field is set to False.
+### **Permissions:**
+- Permissions are mapped to roles (e.g., `can_manage_users`, `can_moderate`).
 
-- A verification_token is generated.
+### **Access Control Examples:**
+1. **Moderator Managing Chats:** Requires `can_moderate` permission.
+2. **Admin Managing Users:** Requires `can_manage_users` permission.
 
-**_Default Role Assignment:_**
+---
 
-- The user is assigned a default role (user).
+## 🛠️ **6. Profile Updates**
 
-**_Email Verification:_**
+### **Endpoint:** `PUT /profile/`
 
-- A verification email is sent to the user with a link containing the verification_token.
+- **Purpose:** Allows users to update profile information.
+- **Steps:**
+  1. Input fields like `bio`, `avatar`, or `password`.
+  2. Validate and save updates.
+  3. Password updates require current password verification.
 
-**_Response:_**
+---
 
-- Returns user details (via UserSerializer).
+## 🚪 **7. Logout Process**
 
-- Returns access and refresh tokens for the user.
+### **Endpoint:** `POST /logout/`
 
-### Email Verification Process
+- **Purpose:** Ends the user session securely.
+- **Steps:**
+  1. Blacklists the user’s refresh token.
+  2. Sets `is_online` to `False`.
 
-**_Endpoint: GET /verify-email/<token>/_**
+---
 
-- Purpose: Verifies the user’s email address.
+## 🧩 **Key Components**
 
-Steps:
+### **Models:**
+- `CustomUser`: Core user model.
+- `Role`: Defines roles and permissions.
 
-**_Token Validation:_**
+### **Serializers:**
+- `UserRegistrationSerializer`
+- `UserLoginSerializer`
+- `UserProfileUpdateSerializer`
+- `RoleSerializer`
 
-- The verification_token is checked for validity.
+### **Permissions:**
+- `RolePermission`: Enforces role-based access control.
 
-- If valid, email_verified is set to True.
+---
 
-**_Response:_**
+## 📋 **Endpoints Summary**
 
-- On success: Confirms that the email has been verified.
+| **Action**         | **Method** | **Endpoint**              |
+|---------------------|------------|---------------------------|
+| **Register**        | `POST`     | `/register/`              |
+| **Login**           | `POST`     | `/login/`                 |
+| **Verify Email**    | `GET`      | `/verify-email/<token>/`  |
+| **Logout**          | `POST`     | `/logout/`                |
+| **Profile**         | `GET/PUT`  | `/profile/`               |
+| **Manage Roles**    | `GET/POST` | `/roles/` (Admin only)    |
 
-- On failure: Provides an error message (e.g., token expired or invalid).
+---
 
+## ✨ **Project Highlights**
+- Comprehensive user data flow management.
+- Robust authentication and email verification.
+- Role-based access control for secure resource management.
+- Clean and user-friendly APIs powered by Django.
 
-### User Login Process
+---
 
-**_Endpoint: POST /login/_**
-
-- Purpose: Authenticates the user and generates access tokens.
-
-Steps:
-
-**_Data Input: The user provides:_**
-
-- email
-
-- password
-
-- (Optional) device_token (used for push notifications).
-
-**_Validation:_**
-
-- Credentials are validated using Django’s authenticate() function.
-
-- If the user’s email is not verified, an error is returned.
-
-**_Session Updates:_**
-
-- is_online is set to True.
-
-- last_seen is updated.
-
-- device_token is stored (if provided).
-
-**_Response:_**
-
-- Returns access and refresh tokens.
-
-
-## Accessing Protected Resources
-
-### Token-Based Authentication
-
-- Purpose: Ensures that only authenticated users can access protected resources.
-
-**_Mechanism:_**
-
-- Access tokens are validated using the Django REST Framework’s SimpleJWT.
-
-- Tokens are passed in the Authorization header as Bearer <token>.
-
-Steps:
-
-**_Authentication Middleware:_**
-
-- Verifies the token’s validity.
-
-- Decodes the token to identify the user.
-
-- Denies access if the token is invalid or expired.
-
-**_Role-Based Permissions:_**
-
-- Role permissions are validated using the RolePermission class.
-
-- Each endpoint defines the required permission, which is checked against the user’s role.
-
-**_Example Endpoints:_**
-
-**_Profile: GET /profile/_**
-
-- Returns user-specific details (e.g., username, email, avatar).
-
-- **_Resource Management:_** Protected endpoints (e.g., managing users, deleting messages) are guarded by role-based permissions.
-
-## Role and Permission Management
-
-### Role Assignment:
-
-- Default Role: All new users are assigned the user role by default.
-
-- Admin Assignment: Admins can assign or modify roles via the manage_roles endpoint.
-
-**_Permissions:_**
-
-- Permissions are defined in the Role model (e.g., can_manage_users, can_delete_messages).
-
-- Custom permissions are stored in the custom_permissions JSON field.
-
-**_Access Control Example:_**
-
-**_Moderator Accessing Chat Moderation:_**
-
-- Checks the can_moderate permission.
-
-**_Admin Managing Users:_**
-
-- Checks the can_manage_users permission.
-
-### Profile Updates
-
-**_Endpoint: PUT /profile/_**
-
-- Purpose: Allows users to update their profile.
-
-Steps:
-
-- Data Input: The user submits updates for fields like bio, avatar, or password.
-
-**_Password Updates:_**
-
-- Requires the current password for verification before setting a new password.
-
-**_Validation and Save:_**
-  
-- Validates the input and saves the changes.
-
-### Logout Process
-
-**_Endpoint: POST /logout/_**
-
-- Purpose: Logs the user out by invalidating their tokens.
-
-Steps:
-
-** Access Token Blacklisting:_**
-
-- The user’s refresh token is blacklisted to prevent further usage.
-
-**_Online Status Update:_**
-
-- Sets is_online to False.
-
-## Key Components
-
-### Models:
-
-- CustomUser: Core user model.
-
-- Role: Defines roles and associated permissions.
-
-### Serializers:
-
-- UserRegistrationSerializer
-
-- UserLoginSerializer
-
-- UserSerializer
-
-- UserProfileUpdateSerializer
-
-- RoleSerializer
-
-### Permissions:
-
-- RolePermission: Maps roles to endpoint-specific permissions.
-
-### Endpoints:
-
-Action        Method      Endpoint    
-
-Register       POST       /register/
-
-Login          POST       /login/
-
-Verify Email   GET        /verify-email/<token>/
-
-Logout         POST       /logout/
-
-Profile        GET/PUT    /profile/
-
-Manage Roles   GET/POST   /roles/ (Admin only)
-
-
-
-
-
+Feel free to reach out for contributions, feedback, or support!
