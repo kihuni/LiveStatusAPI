@@ -1,6 +1,6 @@
 ## CollabSphere 🌐
 
-CollabSphere is a powerful Django-based real-time communication platform plugin designed to enable seamless collaboration through chat rooms, direct messaging, group conversations, and file sharing capabilities. Built with scalability and extensibility in mind, CollabSphere provides a robust foundation for adding real-time communication features to your Django applications.
+CollabSphere is a Django-based real-time communication platform plugin designed to enable seamless collaboration through chat rooms, direct messaging, group conversations, and file-sharing capabilities. Built with scalability and extensibility, CollabSphere provides a robust foundation for adding real-time communication features to your Django applications.
 
 
 📋 Table of Contents
