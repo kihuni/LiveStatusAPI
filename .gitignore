@@ -52,3 +52,4 @@ egg-info/
 .vscode/
 
 .pydevproject
+.codegpt

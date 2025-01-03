@@ -49,9 +49,11 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "rest_framework_simplejwt",
+    "channels",
     
     # Local apps
     "users",
+    "chatRooms",
 ]
 
 MIDDLEWARE = [
