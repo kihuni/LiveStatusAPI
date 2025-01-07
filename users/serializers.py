@@ -10,12 +10,12 @@ class RoleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
-    role = RoleSerializer(read_only=True)
+    roles = RoleSerializer(read_only=True)
     
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'username', 'full_name', 'avatar', 'bio', 
-                 'is_online', 'last_seen', 'date_joined', 'role', 'email_verified')
+                 'is_online', 'last_seen', 'date_joined', 'roles', 'email_verified')
         read_only_fields = ('id', 'date_joined', 'last_seen', 'is_online', 
                           'email_verified')
         

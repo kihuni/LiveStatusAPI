@@ -46,8 +46,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     device_tokens = models.JSONField(default=dict, blank=True)
 
     # Role field
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
-    
+    roles = models.ManyToManyField(Role,help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups. Hold down “Control”, or “Command” on a Mac, to select more than one.')
+
     # Verification fields
     email_verified = models.BooleanField(default=False)
     verification_token = models.CharField(max_length=100, blank=True)
@@ -73,15 +73,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         self.save(update_fields=['is_online', 'last_seen'])
     
     def get_permissions(self):
-        if not self.role:
+        if not self.roles:
             return {}
         return {
-            'can_moderate': self.role.can_moderate,
-            'can_manage_users': self.role.can_manage_users,
-            'can_manage_roles': self.role.can_manage_roles,
-            'can_delete_messages': self.role.can_delete_messages,
-            'can_ban_users': self.role.can_ban_users,
-            **self.role.custom_permissions  # Include any custom permissions
+            'can_moderate': self.roles.can_moderate,
+            'can_manage_users': self.roles.can_manage_users,
+            'can_manage_roles': self.roles.can_manage_roles,
+            'can_delete_messages': self.roles.can_delete_messages,
+            'can_ban_users': self.roles.can_ban_users,
+            **self.roles.custom_permissions  # Include any custom permissions
         }
 
     def generate_verification_token(self):

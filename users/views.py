@@ -27,7 +27,7 @@ class RegisterView(generics.CreateAPIView):
             name='user',
             defaults={'description': 'Default user role'}
         )[0]
-        user.role = default_role
+        user.roles = default_role
         user.save()
         
         # Generate tokens
