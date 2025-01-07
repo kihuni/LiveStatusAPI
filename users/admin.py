@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import Role
+from .models import Role, CustomUser
 
 # Register your models here.
 
@@ -37,3 +37,4 @@ class RoleAdmin(admin.ModelAdmin):
     list_filter = ('priority',)
     list_per_page = 10
     search_fields = ('name', 'priority')
+
