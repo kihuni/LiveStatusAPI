@@ -13,7 +13,7 @@ class Role(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     priority = models.IntegerField(default=0)
-    custom_permissions = models.JSONField(default=dict)
+    custom_permissions = models.JSONField(default=dict,null=True,blank=True)
     
     # Define permissions for each role
     can_moderate = models.BooleanField(default=False)
