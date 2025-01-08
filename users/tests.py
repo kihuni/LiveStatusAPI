@@ -91,19 +91,19 @@ class AuthenticationTests(APITestCase):
             full_name=self.user_data['full_name'],
             email_verified=True
         )
-        
+
         response = self.client.post(reverse('login'), {
             'email': self.user_data['email'],
             'password': self.user_data['password']
         })
-        
+
         refresh_token = response.data['tokens']['refresh']
-        
+
         # Test token refresh
         response = self.client.post(reverse('token_refresh'), {
             'refresh': refresh_token
         })
-        
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue('access' in response.data)
 
@@ -125,11 +125,11 @@ class AuthenticationTests(APITestCase):
             'device_token': 'test-token',
             'device_type': 'web'
         })
-        
+
         # Get token and set authorization header
         token = response.data['tokens']['access']
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
-        
+
         # Test logout
         response = self.client.post(reverse('logout'), {'device_type': 'web'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -149,7 +149,7 @@ class AuthenticationTests(APITestCase):
             full_name=self.user_data['full_name'],
             email_verified=True
         )
-        
+
         # Login and get token
         response = self.client.post(reverse('login'), {
             'email': self.user_data['email'],
@@ -157,13 +157,13 @@ class AuthenticationTests(APITestCase):
         })
         token = response.data['tokens']['access']
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
-        
+
         # Update profile
         update_data = {
             'full_name': 'Updated Name',
             'bio': 'New bio'
         }
-        
+
         response = self.client.patch(reverse('profile'), update_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['full_name'], 'Updated Name')
