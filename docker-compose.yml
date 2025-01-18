@@ -1,0 +1,57 @@
+services:
+  api:
+    build: .
+    container_name: api
+    command: python manage.py runserver 0.0.0.0:8000
+    # command: gunicorn --bind 0.0.0.0:8000 config.wsgi:application  # Production server
+    volumes:
+      - .:/app
+      - ./static:/app/static
+      - ./staticfiles:/app/staticfiles
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DEBUG =  True
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - USE_DOCKER=${USE_DOCKER}
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:14
+    container_name: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  redis_data:

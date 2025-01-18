@@ -1,7 +1,7 @@
 env/
 env/bin/
 env/lib/
-.venv/
+*venv/
 .env
 
 

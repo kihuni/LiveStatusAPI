@@ -2,7 +2,15 @@ asgiref==3.8.1
 Django==5.1.4
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
+gunicorn==23.0.0
+packaging==24.2
 pillow==11.0.0
+psycopg2-binary==2.9.10
 PyJWT==2.10.1
+python-decouple==3.8
 sqlparse==0.5.3
 typing_extensions==4.12.2
+channels==4.0.0
+channels-redis==4.1.0
+daphne==4.0.0
+redis==5.0.1
