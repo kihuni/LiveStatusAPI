@@ -18,6 +18,7 @@ class Role(models.Model):
     # Define permissions for each role
     can_moderate = models.BooleanField(default=False)
     can_manage_users = models.BooleanField(default=False)
+    # 
     can_manage_roles = models.BooleanField(default=False)
     can_delete_messages = models.BooleanField(default=False)
     can_ban_users = models.BooleanField(default=False)

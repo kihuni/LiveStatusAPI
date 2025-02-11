@@ -25,4 +25,5 @@ admin.site.index_title = 'Collab Sphere Admin'
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('users.urls')),
+    path('api/chat/', include('collabsphere.apps.chatRooms.urls')),
 ]
