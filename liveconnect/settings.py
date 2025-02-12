@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "rest_framework_simplejwt",
-    "channels",
+    #"channels",
+    #'drf_yasg',
     
     # Local apps
     "users",
@@ -64,9 +65,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
-ROOT_URLCONF = "Collabspehere.urls"
+ROOT_URLCONF = "liveconnect.urls"
 
 TEMPLATES = [
     {
@@ -84,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "Collabspehere.wsgi.application"
+WSGI_APPLICATION = "liveconnect.wsgi.application"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",

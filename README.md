@@ -1,6 +1,6 @@
-## CollabSphere 🌐
+## LiveConnect 🌐
 
-CollabSphere is a Django-based real-time communication platform plugin designed to enable seamless collaboration through chat rooms, direct messaging, group conversations, and file-sharing capabilities. Built with scalability and extensibility, CollabSphere provides a robust foundation for adding real-time communication features to your Django applications.
+LiveConnect is a Django-based real-time communication platform plugin designed to enable seamless collaboration through chat rooms, direct messaging, group conversations, and file-sharing capabilities. Built with scalability and extensibility, LiveConnect provides a robust foundation for adding real-time communication features to your Django applications.
 
 
 📋 Table of Contents
@@ -55,32 +55,26 @@ CollabSphere is a Django-based real-time communication platform plugin designed 
 
 **_Clone the repository:_**
 
-```
-clone https://github.com/yourusername/collabsphere.git
+Clone the repository:
 
-```
+clone https://github.com/yourusername/LiveConnec.git
 
-**_Create virtual environment:_**
+Create virtual environment:
 
 ```
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-
 ```
-
-**_Install development dependencies:_**
+Install development dependencies:
 
 ```
 pip install -r requirements-dev.txt
-
 ```
-**_Run tests:_**
-
+Run tests:
 ```
 python manage.py test
-
 ```
-### 🤝 Contributing
+🤝 Contributing
 
 1. Fork the repository
 
