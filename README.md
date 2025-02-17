@@ -1,134 +1,176 @@
-# LiveStatusAPI 🚀  
+## 📚 LiveStatusAPI: Real-Time Presence Tracking
 
-LiveStatusAPI is an **open-source real-time presence tracking and engagement analytics API**. It enables developers to integrate **real-time user status, analytics, and webhooks** into their applications.  
+A real-time presence tracking API that enables applications to monitor user activity, predict response times, and analyze engagement trends.
 
-## 📌 **Features**  
-✅ Track user presence (`Online, Offline, Away, Busy`)  
-✅ Retrieve historical engagement analytics  
-✅ Webhooks for real-time updates  
-✅ Predictive engagement scoring  
-✅ Multi-device presence tracking  
+### 🌟 Key Features
 
-## 🚀 **Getting Started**  
+- **Real-Time Presence Tracking**: Monitor user online status across different devices
+- **Engagement Analytics**: Analyze user activity patterns and engagement metrics
+- **Response Time Prediction**: Smart algorithms to predict user response times
+- **Webhook Integration**: Register webhooks for real-time presence updates
+- **Role-Based Access Control**: Secure, permission-based API access
 
-### 1️⃣ Clone the Repository**  
+## 🚀 API Endpoints
 
-```
-git clone https://github.com/YOUR_GITHUB_USERNAME/LiveStatusAPI.git
-cd LiveStatusAPI
+### Presence Management
 
-```
-### 2️⃣ Set Up the Virtual Environment & Install Dependencies
+#### Get User Presence
+- **Endpoint**: `GET /users/{userId}/presence`
+- **Purpose**: Retrieve a user's current presence data
+- **Response**: Returns detailed presence information including:
+  - Current status (online, away, offline, busy)
+  - Last seen timestamp
+  - Device type
+  - Predicted response time
+  - Engagement score
 
-```
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+#### Update User Presence
+- **Endpoint**: `PUT /users/{userId}/presence`
+- **Purpose**: Update a user's presence status
+- **Request Body**: Accepts status updates and device information
+- **Response**: Confirms the presence update was successful
 
-```
+### Analytics
 
-### 3️⃣ Run Migrations & Start Server
+#### Get User Analytics
+- **Endpoint**: `GET /users/{userId}/analytics`
+- **Purpose**: Retrieve analytics about user presence patterns
+- **Parameters**: 
+  - `timeRange` (day, week, month)
+- **Response**: Returns analytics including:
+  - Average response time
+  - Peak activity hours
+  - Engagement trends over time
 
-```
-python manage.py migrate
-python manage.py runserver
+### Webhooks
 
-```
-### 4️⃣ API Documentation
+#### Register Webhook
+- **Endpoint**: `POST /webhooks`
+- **Purpose**: Register a webhook for presence updates
+- **Request Body**: URL and events to subscribe to
+- **Response**: Confirms webhook registration
 
-The API is documented using OpenAPI 3.0. View it locally:
+## 🔒 Authentication & Authorization
 
-```
-python manage.py runserver
+### Authentication Flow
 
-```
+- **Login endpoint**: `POST /api/login/`
+- **Authentication Method**: JWT (JSON Web Tokens)
+- **Token Validation**: All protected endpoints validate the token
+- **Refresh Mechanism**: Use refresh tokens to obtain new access tokens
 
-Then visit: http://127.0.0.1:8000/docs
+### User Registration
+- **Registration endpoint**: `POST /api/register/`
+- **Required Fields**: email, username, password
+- **Email Verification**: Required before full access
+- **Verification endpoint**: `GET /api/verify-email/<token>/`
 
-### 🔄 Endpoints Overview
+## 📖 API Documentation
 
-User Presence
+The complete API specification is available through OpenAPI 3.0.0:
 
-📌 GET /users/{userId}/presence - Retrieve user presence
-📌 PUT /users/{userId}/presence - Update presence status
-
-Analytics
-📌 GET /users/{userId}/analytics?timeRange=day|week|month - Retrieve analytics
-
-Webhooks
-📌 POST /webhooks - Register webhook for presence updates
-
-Full API reference available in openapi.yaml.
-
-🛠️ Contributing
-We welcome contributions! 🎉 See CONTRIBUTING.md for details on how to get started.
-
-## ✅ **How to Contribute**  
-
-1. **Fork the Repository**  
-   - Click the **Fork** button at the top of the repository.  
+- **OpenAPI Specification**: 
+  - Access the raw OpenAPI specification at: `/api/schema/`
   
-2. **Clone Your Fork Locally**  
- 
- ```
-   git clone https://github.com/YOUR_GITHUB_USERNAME/LiveStatusAPI.git
-   cd LiveStatusAPI
+- **Interactive Documentation**: 
+  - Swagger UI: `/api/schema/swagger-ui/`
+  - ReDoc: `/api/schema/redoc/`
 
-```
-3. **Create a New Branch**
+### Schema Components
+Our API defines several key schema components:
 
-```
-git checkout -b feature-branch
+- **PresenceData**: User presence information
+  - Status (online, away, offline, busy)
+  - Last seen timestamp
+  - Device type
+  - Engagement metrics
+  
+- **PresenceUpdate**: Format for updating presence
+  - Status changes
+  - Device information
 
-```
-4. **Make Your Changes & Commit**
+- **AnalyticsData**: User analytics information
+  - Response time metrics
+  - Activity patterns
+  - Engagement trends
 
-```
-git add .
-git commit -m "Added feature X"
+- **WebhookRegistration**: Format for registering webhooks
+  - Target URL
+  - Event subscriptions
 
-```
-5. **Push & Create a Pull Request**
+## 🧩 Project Components
 
-```
-git push origin feature-branch
+### Models
+- **CustomUser**: Extended user model with presence data
+- **PresenceRecord**: Tracks historical presence information
+- **WebhookSubscription**: Manages webhook registrations
 
-```
-- Go to GitHub → Open a Pull Request from your branch.
+### Serializers
+- **PresenceDataSerializer**
+- **PresenceUpdateSerializer**
+- **AnalyticsDataSerializer**
+- **WebhookRegistrationSerializer**
 
-- Follow the PR template and describe your changes.
+### Permissions
+- JWT authentication
+- Role-based access control
 
-### ⚙️ Project Setup
+## 🚀 Getting Started
 
-### 1️⃣ Set Up Virtual Environment
+To run the project locally:
 
-```
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+1. Clone the repository
+2. Install requirements: 
+   
+   ```
+   pip install -r requirements.txt
 
-```
-### 2️⃣ Run Migrations & Start Server
+   ```
+3. Configure environment variables.
 
-```
-python manage.py migrate
-python manage.py runserver
-```
+   - Create a .env file in the root directory (see .env.example for reference).
+   
+4. Run migrations:
+   ```
+    python manage.py migrate
 
-### 3️⃣ Run Tests Before Submitting PR
+    ```
+5. Start the server:
+   ```
+    python manage.py runserver
 
-
-```
-pytest tests/
-
-```
-### 📝 Coding Guidelines
-
-🔹 Follow PEP8 for Python code formatting.
-🔹 Use docstrings and meaningful variable names.
-🔹 Write unit tests for new features.
+   ```
+6. Explore the API docs at: http://localhost:8000/api/schema/swagger-ui/
 
 
-### 🏷 Issue Tracking
+📋 Complete Endpoints Summary
 
-Check out the Issues tab for tasks you can work on.
+Action	          Method	                           Endpoint
+
+Get User Presence	  GET	                      /users/{userId}/presence
+
+Update Presence	  PUT	                      /users/{userId}/presence
+
+Get Analytics	     GET	                      /users/{userId}/analytics
+
+Register Webhook	  POST	                   /webhooks
+
+Register User	     POST	                   /api/register/
+
+Login	              POST	                   /api/login/
+
+Verify Email	     GET	                      /api/verify-email/<token>/
+
+Logout	           POST	                  /api/logout/
+
+Profile	           GET/PUT	              /api/profile/
+
+### ✨ Project Benefits
+
+- For Developers: Easy integration with standardized endpoints
+- For Businesses: Insights into user engagement and activity patterns
+- For Users: Seamless presence sharing with privacy controls
+- For Operations: Webhook-based automation for presence events
+
+
+Feel free to reach out for contributions, feedback, or support!
