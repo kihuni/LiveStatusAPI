@@ -1,87 +1,134 @@
-## LiveConnect 🌐
+# LiveStatusAPI 🚀  
 
-LiveConnect is a Django-based real-time communication platform plugin designed to enable seamless collaboration through chat rooms, direct messaging, group conversations, and file-sharing capabilities. Built with scalability and extensibility, LiveConnect provides a robust foundation for adding real-time communication features to your Django applications.
+LiveStatusAPI is an **open-source real-time presence tracking and engagement analytics API**. It enables developers to integrate **real-time user status, analytics, and webhooks** into their applications.  
 
+## 📌 **Features**  
+✅ Track user presence (`Online, Offline, Away, Busy`)  
+✅ Retrieve historical engagement analytics  
+✅ Webhooks for real-time updates  
+✅ Predictive engagement scoring  
+✅ Multi-device presence tracking  
 
-📋 Table of Contents
+## 🚀 **Getting Started**  
 
-- Features
-- Requirements
-- Installation
-- Development
-- Contributing
+### 1️⃣ Clone the Repository**  
 
-### ✨ Features
+```
+git clone https://github.com/YOUR_GITHUB_USERNAME/LiveStatusAPI.git
+cd LiveStatusAPI
 
-**_Authentication_**
+```
+### 2️⃣ Set Up the Virtual Environment & Install Dependencies
 
-- 🔐 Custom user profiles
-- 👤 User status tracking
-- 🕒 Last seen functionality
-- 🔑 Social authentication support
+```
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 
-**_Chat Features_**
+```
 
-- 💬 Public chat rooms
-- 📱 Direct messaging
-- 👥 Group chats
-- 📝 Message editing and deletion
-- 👀 Read receipts
-- ⌨️ Typing indicators
+### 3️⃣ Run Migrations & Start Server
 
-**_File Sharing_**
+```
+python manage.py migrate
+python manage.py runserver
 
-- 📁 Secure file uploads
-- 🖼️ Image previews
-- 📄 Document sharing
-- 🔍 File search capabilities
+```
+### 4️⃣ API Documentation
 
-**_Notifications_**
+The API is documented using OpenAPI 3.0. View it locally:
 
-- 🔔 Real-time notifications
-- 📧 Email notifications
-- ⚙️ Custom notification preferences
+```
+python manage.py runserver
 
-### 📋 Requirements
+```
 
-- Python 3.8+
-- Django 3.2+
-- Redis
-- PostgreSQL
-- Additional dependencies listed in requirements.txt
+Then visit: http://127.0.0.1:8000/docs
 
+### 🔄 Endpoints Overview
 
-### 🛠️ Development
+User Presence
 
-**_Clone the repository:_**
+📌 GET /users/{userId}/presence - Retrieve user presence
+📌 PUT /users/{userId}/presence - Update presence status
 
-Clone the repository:
+Analytics
+📌 GET /users/{userId}/analytics?timeRange=day|week|month - Retrieve analytics
 
-clone https://github.com/yourusername/LiveConnec.git
+Webhooks
+📌 POST /webhooks - Register webhook for presence updates
 
-Create virtual environment:
+Full API reference available in openapi.yaml.
+
+🛠️ Contributing
+We welcome contributions! 🎉 See CONTRIBUTING.md for details on how to get started.
+
+## ✅ **How to Contribute**  
+
+1. **Fork the Repository**  
+   - Click the **Fork** button at the top of the repository.  
+  
+2. **Clone Your Fork Locally**  
+ 
+ ```
+   git clone https://github.com/YOUR_GITHUB_USERNAME/LiveStatusAPI.git
+   cd LiveStatusAPI
+
+```
+3. **Create a New Branch**
+
+```
+git checkout -b feature-branch
+
+```
+4. **Make Your Changes & Commit**
+
+```
+git add .
+git commit -m "Added feature X"
+
+```
+5. **Push & Create a Pull Request**
+
+```
+git push origin feature-branch
+
+```
+- Go to GitHub → Open a Pull Request from your branch.
+
+- Follow the PR template and describe your changes.
+
+### ⚙️ Project Setup
+
+### 1️⃣ Set Up Virtual Environment
 
 ```
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-```
-Install development dependencies:
+pip install -r requirements.txt
 
 ```
-pip install -r requirements-dev.txt
+### 2️⃣ Run Migrations & Start Server
+
 ```
-Run tests:
+python manage.py migrate
+python manage.py runserver
 ```
-python manage.py test
+
+### 3️⃣ Run Tests Before Submitting PR
+
+
 ```
-🤝 Contributing
+pytest tests/
 
-1. Fork the repository
+```
+### 📝 Coding Guidelines
 
-2. Create your feature branch (git checkout -b feature/AmazingFeature)
+🔹 Follow PEP8 for Python code formatting.
+🔹 Use docstrings and meaningful variable names.
+🔹 Write unit tests for new features.
 
-3. Commit your changes (git commit -m 'Add some AmazingFeature')
 
-4. Push to the branch (git push origin feature/AmazingFeature)
+### 🏷 Issue Tracking
 
-5. Open a Pull Request
+Check out the Issues tab for tasks you can work on.

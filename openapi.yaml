@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: LiveStatusAPI
+  version: 1.0.0
+  description:  A real-time presence tracking API that enables applications to monitor user activity, predict response times, and analyze engagement trends.
+
+#servers:
+  #- url: https://api.liveconnect.example/v1
+
+paths:
+  /users/{userId}/presence:
+    get:
+      summary: Get user's current presence data
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User presence information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresenceData'
+    
+    put:
+      summary: Update user's presence status
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PresenceUpdate'
+      responses:
+        '200':
+          description: Presence updated successfully
+          
+  /users/{userId}/analytics:
+    get:
+      summary: Get user's presence analytics
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timeRange
+          in: query
+          schema:
+            type: string
+            enum: [day, week, month]
+      responses:
+        '200':
+          description: User analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsData'
+
+  /webhooks:
+    post:
+      summary: Register webhook for presence updates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRegistration'
+      responses:
+        '201':
+          description: Webhook registered successfully
+
+components:
+  schemas:
+    PresenceData:
+      type: object
+      properties:
+        userId:
+          type: string
+        status:
+          type: string
+          enum: [online, away, offline, busy]
+        lastSeen:
+          type: string
+          format: date-time
+        predictedResponseTime:
+          type: integer
+          description: Predicted response time in minutes
+        deviceType:
+          type: string
+          enum: [mobile, desktop, tablet]
+        engagementScore:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: User's current engagement score
+
+    PresenceUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [online, away, offline, busy]
+        deviceType:
+          type: string
+          enum: [mobile, desktop, tablet]
+
+    AnalyticsData:
+      type: object
+      properties:
+        averageResponseTime:
+          type: integer
+        peakActivityHours:
+          type: array
+          items:
+            type: integer
+        engagementTrend:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              score:
+                type: number
+
+    WebhookRegistration:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+            enum: [status_change, engagement_update]

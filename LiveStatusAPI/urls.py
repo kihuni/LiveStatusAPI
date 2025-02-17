@@ -19,11 +19,20 @@ from django.contrib import admin
 from django.urls import path, include
 
 #customization for the admin panel main interface
-admin.site.site_header = 'Live connect: A smarter way of collaborating'
-admin.site.index_title = 'Live connect Admin'
+admin.site.site_header = 'Live status: A smarter way of collaborating'
+admin.site.index_title = 'Live status Admin'
+
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('users.urls')),
-    path('api/chat/', include('collabsphere.apps.chatRooms.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
