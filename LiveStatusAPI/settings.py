@@ -155,7 +155,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email address
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password or app-specific password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
@@ -164,7 +164,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'A real-time presence tracking API that enables applications to monitor user activity, predict response times, and analyze engagement trends.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
 }
 
 FRONTEND_URL = "http://localhost:3000"
