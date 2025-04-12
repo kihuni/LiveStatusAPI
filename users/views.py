@@ -1,31 +1,20 @@
-from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer
-from rest_framework import generics, status, serializers
+# users/views.py
+
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from rest_framework import serializers
+from users.serializers import RegisterSerializer
 
 User = get_user_model()
 
-class UserView(generics.ListCreateAPIView):
-    """
-    API endpoint for listing all users or creating a new user.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
 class RegisterView(generics.CreateAPIView):
-    """
-    API endpoint for user registration.
-    """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]  # Allow anyone to register
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -35,15 +24,11 @@ class RegisterView(generics.CreateAPIView):
             "message": "User registered successfully. Please verify your email to activate your account.",
             "user": {
                 "id": str(user.id),
-                "username": user.username,
                 "email": user.email
             }
         }, status=status.HTTP_201_CREATED)
 
 class VerifyEmailView(generics.GenericAPIView):
-    """
-    API endpoint to verify a user's email with a token.
-    """
     permission_classes = [AllowAny]
 
     def get(self, request, token, *args, **kwargs):
@@ -52,16 +37,23 @@ class VerifyEmailView(generics.GenericAPIView):
             if user.is_verified:
                 return Response({"message": "Email already verified."}, status=status.HTTP_400_BAD_REQUEST)
             user.is_verified = True
-            user.is_active = True  # Activate the user account
-            user.verification_token = None  # Clear the token
+            user.is_active = True
+            user.verification_token = None
             user.save()
             return Response({"message": "Email verified successfully. You can now log in."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "Invalid verification token."}, status=status.HTTP_400_BAD_REQUEST)
         
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'username' in self.fields:
+            del self.fields['username']
+
     def validate(self, attrs):
-        # Replace username with email for login
         email = attrs.get("email")
         password = attrs.get("password")
 
@@ -72,8 +64,18 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                     raise serializers.ValidationError("Please verify your email before logging in.")
                 if not user.is_active:
                     raise serializers.ValidationError("User account is inactive.")
-                attrs['username'] = user.username  # Set username for the default serializer
-                return super().validate(attrs)
+                
+                self.user = user
+                refresh = self.get_token(self.user)
+                data = {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "user": {
+                        "id": str(self.user.id),
+                        "email": self.user.email
+                    }
+                }
+                return data
             else:
                 raise serializers.ValidationError("Invalid email or password.")
         else:
@@ -81,16 +83,3 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return Response({
-            "access": serializer.validated_data['access'],
-            "refresh": serializer.validated_data['refresh'],
-            "user": {
-                "id": str(serializer.user.id),
-                "username": serializer.user.username,
-                "email": serializer.user.email
-            }
-        }, status=status.HTTP_200_OK)
