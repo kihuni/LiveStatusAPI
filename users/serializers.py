@@ -1,4 +1,5 @@
 # users/serializers.py
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -47,4 +48,39 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
     
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'username' in self.fields:
+            del self.fields['username']
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        if email and password:
+            user = User.objects.filter(email=email).first()
+            if user and user.check_password(password):
+                if not user.is_verified:
+                    raise serializers.ValidationError("Please verify your email before logging in.")
+                if not user.is_active:
+                    raise serializers.ValidationError("User account is inactive.")
+                
+                self.user = user
+                refresh = self.get_token(self.user)
+                data = {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "user": {
+                        "id": str(self.user.id),
+                        "email": self.user.email
+                    }
+                }
+                return data
+            else:
+                raise serializers.ValidationError("Invalid email or password.")
+        else:
+            raise serializers.ValidationError("Must include 'email' and 'password'.")
