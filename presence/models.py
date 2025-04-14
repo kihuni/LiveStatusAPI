@@ -1,20 +1,27 @@
 from django.db import models
-from django.conf import settings
-
+from users.models import CustomUser
 
 class Presence(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=[
+    STATUS_CHOICES = (
         ('online', 'Online'),
-        ('away', 'Away'),
         ('offline', 'Offline'),
+        ('away', 'Away'),
         ('busy', 'Busy'),
-    ], default='offline')
-    
+    )
+
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='presence',
+        primary_key=True
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='offline'
+    )
     last_seen = models.DateTimeField(auto_now=True)
-    
-    device_type = models.CharField(max_length=10, choices=[
-        ('mobile', 'Mobile'),
-        ('desktop', 'Desktop'),
-        ('tablet', 'Tablet'),
-    ], default='desktop')
+    device_type = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.status}"
