@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "presence",
+    "analytics",
     #'drf_yasg',
     "drf_spectacular",
     "corsheaders",
