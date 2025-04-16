@@ -1,5 +1,3 @@
-# analytics/models.py
-
 from django.db import models
 from users.models import CustomUser
 
@@ -13,7 +11,7 @@ class ResponseHistory(models.Model):
     received_at = models.DateTimeField()  # When the message was received
     responded_at = models.DateTimeField()  # When the user responded
     presence_status = models.CharField(max_length=10)  # User's presence status at the time of response
-    response_time = models.IntegerField()  # Response time in seconds (computed field)
+    response_time = models.IntegerField()  # Response time in seconds (computed)
 
     def save(self, *args, **kwargs):
         # Compute response_time in seconds

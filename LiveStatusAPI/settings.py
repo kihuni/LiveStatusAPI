@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "presence",
     "analytics",
     #'drf_yasg',
@@ -144,11 +145,14 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Access token expires in 60 minutes
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token expires in 1 day
-    'ROTATE_REFRESH_TOKENS': True,  # Rotate refresh tokens on use
+    'ROTATE_REFRESH_TOKENS': False,  # Rotate refresh tokens on use
     'BLACKLIST_AFTER_ROTATION': True,  # Blacklist old refresh tokens
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',  # Matches your CustomUser's UUID field
     'USER_ID_CLAIM': 'user_id',
+     "AUTH_TOKEN_CLASSES": (
+        "rest_framework_simplejwt.tokens.AccessToken",
+    ),
 }
 
 # Email settings (for email verification)
@@ -174,7 +178,7 @@ FRONTEND_URL = "http://localhost:3000"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Nairobi"
 
 USE_I18N = True
 

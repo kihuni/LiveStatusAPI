@@ -25,3 +25,14 @@ class Presence(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.status}"
+    
+    
+
+class PresenceRecord(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='presence_records')
+    status = models.CharField(max_length=10, choices=Presence.STATUS_CHOICES)
+    device_type = models.CharField(max_length=50, blank=True, null=True)
+    recorded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.status} @ {self.recorded_at}"
