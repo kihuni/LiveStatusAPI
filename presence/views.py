@@ -8,15 +8,16 @@ from presence.models import PresenceRecord
 from .permissions import IsOwnerOrAdmin
 
 
-class PresenceView(generics.RetrieveUpdateAPIView):
+class PresenceView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PresenceSerializer
 
     def get_object(self):
         user_id = self.kwargs.get('userId')
         try:
-            return Presence.objects.get(user__id=user_id)
-        except Presence.DoesNotExist:
+            presence = Presence.objects.get(user__id=user_id)
+            return presence
+        except (Presence.DoesNotExist):
             raise serializers.ValidationError("User or presence data not found.")
         
 class PresenceUpdateView(generics.UpdateAPIView):

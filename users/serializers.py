@@ -7,10 +7,12 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from presence.models import Presence
+from presence.models import Presence, PresenceRecord
 from django.core.mail import send_mail
 from django.urls import reverse
 import uuid
+import re  
+
 
 User = get_user_model()
 
@@ -27,15 +29,36 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 
+    def get_device_type(self, user_agent):
+        """Parse the User-Agent header to determine the device type."""
+        if not user_agent:
+            return "unknown"
+
+        user_agent = user_agent.lower()
+        # Check for mobile devices
+        if re.search(r"mobile|android|iphone|ipad|ipod|opera mini|webos|blackberry|windows phone", user_agent):
+            return "mobile"
+        # Check for tablets
+        elif re.search(r"tablet|kindle|nexus 7|ipad", user_agent):
+            return "tablet"
+        # Check for desktops (including Postman)
+        elif re.search(r"windows|macintosh|linux|x11|postmanruntime", user_agent):
+            return "desktop"
+        # Check for bots or other clients
+        elif re.search(r"bot|crawl|spider|slurp", user_agent):
+            return "bot"
+        return "unknown"
+
     def create(self, validated_data):
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
             is_active=False
         )
-        
-        # Create a Presence record for the user
-        Presence.objects.create(user=user, status='offline')
+
+        user_agent = self.context['request'].META.get('HTTP_USER_AGENT', '')
+        device_type = self.get_device_type(user_agent)
+        Presence.objects.create(user=user, status='offline', device_type=device_type)
 
         verification_token = str(uuid.uuid4())
         user.verification_token = verification_token
@@ -49,7 +72,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         send_mail(
             subject,
             message,
-            'stephenkihuni55@gmail.com',
+            'from@example.com',
             [user.email],
             fail_silently=False,
         )
@@ -66,6 +89,26 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if 'username' in self.fields:
             del self.fields['username']
 
+    def get_device_type(self, user_agent):
+        """Parse the User-Agent header to determine the device type."""
+        if not user_agent:
+            return "unknown"
+
+        user_agent = user_agent.lower()
+        # Check for mobile devices
+        if re.search(r"mobile|android|iphone|ipad|ipod|opera mini|webos|blackberry|windows phone", user_agent):
+            return "mobile"
+        # Check for tablets
+        elif re.search(r"tablet|kindle|nexus 7|ipad", user_agent):
+            return "tablet"
+        # Check for desktops (including Postman)
+        elif re.search(r"windows|macintosh|linux|x11|postmanruntime", user_agent):
+            return "desktop"
+        # Check for bots or other clients
+        elif re.search(r"bot|crawl|spider|slurp", user_agent):
+            return "bot"
+        return "unknown"
+
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
@@ -79,13 +122,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                     raise serializers.ValidationError("User account is inactive.")
                 
                 self.user = user
-                
+
                 # Update the user's presence to 'online'
                 presence, created = Presence.objects.get_or_create(user=self.user)
-                presence.status = 'online'
-                presence.save()
-                
-                
+                if presence.status != 'online' or created:
+                    presence.status = 'online'
+                    user_agent = self.context['request'].META.get('HTTP_USER_AGENT', '')
+                    presence.device_type = self.get_device_type(user_agent)
+                    presence.save()
+
                 refresh = self.get_token(self.user)
                 data = {
                     "access": str(refresh.access_token),
@@ -100,7 +145,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 raise serializers.ValidationError("Invalid email or password.")
         else:
             raise serializers.ValidationError("Must include 'email' and 'password'.")
-        
         
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
