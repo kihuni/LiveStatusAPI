@@ -53,11 +53,23 @@ INSTALLED_APPS = [
     "presence",
     "analytics",
     #'drf_yasg',
+    'channels',
     "drf_spectacular",
     "corsheaders",
     # Local apps
     "users",
 ]
+
+ASGI_APPLICATION = 'liveStatusAPI.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],  # Requires Redis running locally
+        },
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

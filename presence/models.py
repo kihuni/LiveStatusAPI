@@ -1,8 +1,10 @@
-# presence/models.py
-
 from django.db import models
 from users.models import CustomUser
-from django.utils import timezone  # Ensure this import is present
+from django.utils import timezone
+from django.core.validators import URLValidator
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 
 class Presence(models.Model):
     STATUS_CHOICES = (
@@ -28,6 +30,26 @@ class Presence(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.status}"
+
+    def save(self, *args, **kwargs):
+        # Check if status is changing
+        old_instance = Presence.objects.filter(user=self.user).first()
+        old_status = old_instance.status if old_instance else None
+        super().save(*args, **kwargs)
+        if old_status != self.status:
+            
+            # Send WebSocket message instead of webhook
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'presence_updates',
+                {
+                    'type': 'presence_update',
+                    'user_id': str(self.user.id),
+                    'status': self.status,
+                    'device_type': self.device_type or 'unknown',
+                    'timestamp': self.last_seen.isoformat(),
+                }
+            )
 
 class PresenceRecord(models.Model):
     user = models.ForeignKey(

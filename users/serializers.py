@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from presence.models import Presence, PresenceRecord
+from presence.models import Presence
 from django.core.mail import send_mail
 from django.urls import reverse
 import uuid

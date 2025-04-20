@@ -1,5 +1,3 @@
-# presence/serializers.py
-
 from rest_framework import serializers
 from .models import Presence
 from analytics.views import ResponseTimePredictionView  # Import to reuse prediction logic
@@ -35,12 +33,17 @@ class PresenceSerializer(serializers.ModelSerializer):
         representation['predicted_response_time_display'] = prediction_data['predicted_response_time_display']
 
         return representation
-        
-        
-        
-        
-        
-        
-        
-        
-  
+    
+class PresenceUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Presence
+        fields = ['status', 'device_type']
+        extra_kwargs = {
+            'device_type': {'required': False}
+        }
+
+    def validate_status(self, value):
+        valid_statuses = [choice[0] for choice in Presence.STATUS_CHOICES]
+        if value not in valid_statuses:
+            raise serializers.ValidationError(f"Invalid status. Choose from {valid_statuses}.")
+        return value
