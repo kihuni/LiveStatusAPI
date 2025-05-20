@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'channels',
     "drf_spectacular",
     "corsheaders",
-    "channels-redis",
     # Local apps
     "users",
 ]

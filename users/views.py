@@ -143,10 +143,8 @@ class PasswordResetConfirmView(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
+
 class LogoutView(APIView):
-    """
-    Log out a user by blacklisting their refresh token and setting presence to offline.
-    """
     permission_classes = [permissions.IsAuthenticated]
     throttle_scope = "logout"
 
@@ -165,14 +163,11 @@ class LogoutView(APIView):
             presence = Presence.objects.filter(user=request.user).order_by("-last_seen").first()
             if presence:
                 presence.status = "offline"
-                presence.save()
+                presence.save()  # This triggers the WebSocket broadcast via the signal
                 request.user.last_presence_update = presence.last_seen
                 request.user.save(update_fields=["last_presence_update"])
 
             logger.info(f"User logged out: {request.user.email}")
-            # Trigger webhook for logout
-            from webhooks.tasks import trigger_webhook
-            trigger_webhook.delay(user_id=str(request.user.id), event="user.logged_out")
             return Response(
                 {"detail": _("Successfully logged out.")},
                 status=status.HTTP_205_RESET_CONTENT,

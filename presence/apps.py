@@ -6,4 +6,4 @@ class PresenceConfig(AppConfig):
     name = "presence"
 
     def ready(self):
-        import presence.signals  
+        import presence.signals 
