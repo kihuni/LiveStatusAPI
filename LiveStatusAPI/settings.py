@@ -56,17 +56,20 @@ INSTALLED_APPS = [
     'channels',
     "drf_spectacular",
     "corsheaders",
+    "channels-redis",
     # Local apps
     "users",
 ]
 
 ASGI_APPLICATION = 'liveStatusAPI.asgi.application'
 
+# Redis channel layer configuration
+
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],  # Requires Redis running locally
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],  
         },
     },
 }
@@ -150,7 +153,23 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    
+ "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
+        "register": "50/hour",
+        "verify_email": "100/hour",
+        "login": "50/hour",
+        "password_reset": "10/hour",
+        "password_reset_confirm": "10/hour",
+        "logout": "100/hour",
+    },
 }
 
 # JWT settings
@@ -160,7 +179,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,  # Rotate refresh tokens on use
     'BLACKLIST_AFTER_ROTATION': True,  # Blacklist old refresh tokens
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',  # Matches your CustomUser's UUID field
+    'USER_ID_FIELD': 'id', 
     'USER_ID_CLAIM': 'user_id',
      "AUTH_TOKEN_CLASSES": (
         "rest_framework_simplejwt.tokens.AccessToken",
@@ -168,12 +187,14 @@ SIMPLE_JWT = {
 }
 
 # Email settings (for email verification)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+
+DEFAULT_FROM_EMAIL = "no-reply@livestatusapi.com"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.example.com"
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your email password or app-specific password
+EMAIL_HOST_USER = "EMAIL_HOST_USER"
+EMAIL_HOST_PASSWORD = "EMAIL_HOST_PASSWORD"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 SPECTACULAR_SETTINGS = {
